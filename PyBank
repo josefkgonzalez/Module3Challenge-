@@ -1,0 +1,58 @@
+import csv
+
+# Initialize variables
+total_months = 0
+net_profit_loss = 0
+previous_profit_loss = None
+total_change = 0
+greatest_increase = None
+greatest_decrease = None
+date_greatest_increase = None
+date_greatest_decrease = None
+
+# Open and read the CSV file
+with open('budget_data.csv', 'r') as csvfile:
+    csvreader = csv.reader(csvfile)
+    
+    # Skip the header row
+    header = next(csvreader)
+    
+    # Loop through each row in the CSV file
+    for row in csvreader:
+        date = row[0]
+        profit_loss = int(row[1])
+        
+        # Count total number of months
+        total_months += 1
+        
+        # Calculate the net total amount of Profit/Losses
+        net_profit_loss += profit_loss
+        
+        # Calculate the changes in Profit/Losses and average of those changes
+        if previous_profit_loss is not None:
+            change = profit_loss - previous_profit_loss
+            total_change += change
+            
+            # Calculate greatest increase in profits
+            if greatest_increase is None or change > greatest_increase:
+                greatest_increase = change
+                date_greatest_increase = date
+                
+            # Calculate greatest decrease in profits
+            if greatest_decrease is None or change < greatest_decrease:
+                greatest_decrease = change
+                date_greatest_decrease = date
+        
+        previous_profit_loss = profit_loss
+
+# Calculate the average change in Profit/Losses
+average_change = total_change / (total_months - 1)
+
+# Display the results
+print("Financial Analysis")
+print("----------------------------")
+print(f"Total Months: {total_months}")
+print(f"Total: ${net_profit_loss}")
+print(f"Average Change: ${average_change:.2f}")
+print(f"Greatest Increase in Profits: {date_greatest_increase} (${greatest_increase})")
+print(f"Greatest Decrease in Profits: {date_greatest_decrease} (${greatest_decrease})")
